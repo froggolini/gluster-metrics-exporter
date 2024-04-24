@@ -1,0 +1,20 @@
+name: examples
+version: 0.3.0
+
+authors:
+  - Ezra Stevens <ezrastevens@cloudandtree.com>
+  - Darwin
+
+targets:
+  wordcounter:
+    main: src/wordcounter.cr
+  custom-server:
+    main: src/custom-server.cr
+
+dependencies:
+  crometheus:
+    path: ../
+
+crystal: 0.35.1
+
+license: Apache 2.0

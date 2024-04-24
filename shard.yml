@@ -1,0 +1,25 @@
+name: gluster-metrics-exporter
+version: 0.4.2
+
+authors:
+  - Kadalu.io <engineering@kadalu.io>
+
+description: |
+  Simple efficient Prometheus exporter for Gluster Metrics.
+
+dependencies:
+  crometheus:
+    github: darwinnn/crometheus
+    branch: master
+
+  kemal:
+    github: kemalcr/kemal
+
+  glustercli:
+    github: aravindavk/glustercli-crystal
+
+targets:
+  gluster-metrics-exporter:
+    main: src/gluster-metrics-exporter.cr
+
+license: GPLv3

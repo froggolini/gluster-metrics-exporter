@@ -13,8 +13,8 @@ shards:
     version: 0.2.2
 
   glustercli:
-    git: https://github.com/aravindavk/glustercli-crystal.git
-    version: 0.2.0+git.commit.0881f270471be31d4f6d06f45d896e17adace0db
+    git: https://github.com/froggolini/glustercli-crystal.git
+    version: 0.2.0+git.commit.09e285ec385ba47c59392b4726c0f57eff6d99c1
 
   kemal:
     git: https://github.com/kemalcr/kemal.git
@@ -23,4 +23,3 @@ shards:
   radix:
     git: https://github.com/luislavena/radix.git
     version: 0.4.1
-

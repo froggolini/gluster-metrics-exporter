@@ -16,7 +16,7 @@ dependencies:
     github: kemalcr/kemal
 
   glustercli:
-    github: aravindavk/glustercli-crystal
+    github: froggolini/glustercli-crystal
 
 targets:
   gluster-metrics-exporter:

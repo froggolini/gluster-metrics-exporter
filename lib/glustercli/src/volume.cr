@@ -177,13 +177,13 @@ module GlusterCLI
           when "pid"
             brick.pid = ele.content.strip.to_i
           when "sizeTotal"
-            brick.size_total = ele.content.strip.to_u64
+            brick.size_total = ele.content.strip.to_i64
           when "sizeFree"
-            brick.size_free = ele.content.strip.to_u64
+            brick.size_free = ele.content.strip.to_i64
           when "inodesTotal"
-            brick.inodes_total = ele.content.strip.to_u64
+            brick.inodes_total = ele.content.strip.to_i64
           when "inodesFree"
-            brick.inodes_free = ele.content.strip.to_u64
+            brick.inodes_free = ele.content.strip.to_i64
           when "device"
             brick.device = ele.content.strip
           when "blockSize"
@@ -212,8 +212,6 @@ module GlusterCLI
       bricks_status.each do |brick|
         tmp_brick_status["#{brick.node.hostname}:#{brick.path}"] = brick
       end
-
-      puts "hello"
 
       volumes.map do |volume|
         volume.subvols = volume.subvols.map do |subvol|
@@ -274,7 +272,7 @@ module GlusterCLI
     # :nodoc:
     def self.update_volume_health(volumes)
       # Update Volume health based on subvolume health
-      puts "hello3"
+
       volumes.map do |volume|
         if volume.state == STATE_STARTED
           volume.health = HEALTH_UP
@@ -283,7 +281,7 @@ module GlusterCLI
           volume.subvols = volume.subvols.map do |subvol|
             # Update Subvolume health based on bricks health
             subvol = update_subvol_health(subvol)
-            puts "hello4"
+
             # One subvol down means the Volume is degraded
             if subvol.health == HEALTH_DOWN
               volume.health = HEALTH_DEGRADED
@@ -315,7 +313,7 @@ module GlusterCLI
     # TODO: Fix and remove this warning
     # ameba:disable Metrics/CyclomaticComplexity
     def self.update_volume_utilization(volumes)
-      puts "hello2"
+
       volumes.map do |volume|
         volume.subvols = volume.subvols.map do |subvol|
           subvol.size_used = 0
@@ -328,7 +326,6 @@ module GlusterCLI
             next if brick.type == "Arbiter"
 
             subvol.size_used = brick.size_used if brick.size_used >= subvol.size_used
-
             if subvol.size_total == 0 ||
                (brick.size_total <= subvol.size_total &&
                brick.size_total > 0)
@@ -344,30 +341,28 @@ module GlusterCLI
             end
           end
 
-          puts "hello subvol util"
-          # Subvol Size = Sum of size of Data bricks
-          # if subvol.type == TYPE_DISPERSE
-          #   subvol.size_used = subvol.size_used * (
-          #     subvol.disperse_count - subvol.disperse_redundancy_count
-          #   )
+          #Subvol Size = Sum of size of Data bricks
+          if subvol.type == TYPE_DISPERSE
+            subvol.size_used = subvol.size_used * (
+              subvol.disperse_count - subvol.disperse_redundancy_count
+            )
 
-          #   subvol.size_total = subvol.size_total * (
-          #     subvol.disperse_count - subvol.disperse_redundancy_count
-          #   )
+            subvol.size_total = subvol.size_total * (
+              subvol.disperse_count - subvol.disperse_redundancy_count
+            )
 
-          #   subvol.inodes_used = subvol.inodes_used * (
-          #     subvol.disperse_count - subvol.disperse_redundancy_count
-          #   )
+            subvol.inodes_used = subvol.inodes_used * (
+              subvol.disperse_count - subvol.disperse_redundancy_count
+            )
 
-          #   subvol.inodes_total = subvol.inodes_total * (
-          #     subvol.disperse_count - subvol.disperse_redundancy_count
-          #   )
-          # end
+            subvol.inodes_total = subvol.inodes_total * (
+              subvol.disperse_count - subvol.disperse_redundancy_count
+            )
+          end
 
-          # subvol.size_free = subvol.size_total - subvol.size_used
-          # subvol.inodes_free = subvol.inodes_total - subvol.inodes_used
+          subvol.size_free = subvol.size_total - subvol.size_used
+          subvol.inodes_free = subvol.inodes_total - subvol.inodes_used
 
-          puts "hello subvol atas util"
           # Aggregated volume utilization
           volume.size_total += subvol.size_total
           volume.size_used += subvol.size_used
@@ -375,7 +370,6 @@ module GlusterCLI
           volume.inodes_total += subvol.inodes_total
           volume.inodes_used += subvol.inodes_used
           volume.inodes_free = volume.inodes_total - volume.inodes_used
-          puts "hello subvol bawh util"
 
           subvol
         end
@@ -387,14 +381,14 @@ module GlusterCLI
     # :nodoc:
     def _status
       volumes = Volume.update_brick_status([info], Volume.brick_status(@cli, @name))
-      #volumes = Volume.update_volume_utilization(volumes)
+      volumes = Volume.update_volume_utilization(volumes)
       Volume.update_volume_health(volumes)[0]
     end
 
     # :nodoc:
     def self.all_status(cli)
       volumes = Volume.update_brick_status(Volume.list(cli), Volume.brick_status(cli))
-      #volumes = Volume.update_volume_utilization(volumes)
+      volumes = Volume.update_volume_utilization(volumes)
       Volume.update_volume_health(volumes)
     end
 

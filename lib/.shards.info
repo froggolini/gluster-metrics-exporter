@@ -18,4 +18,4 @@ shards:
     version: 1.2.0
   glustercli:
     git: https://github.com/froggolini/glustercli-crystal.git
-    version: 0.2.0+git.commit.09e285ec385ba47c59392b4726c0f57eff6d99c1
+    version: 0.2.0+git.commit.ee27c8b8a646070a1dda7b92a459d7f0aa8aa3a8
